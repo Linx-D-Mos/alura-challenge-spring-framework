@@ -1,62 +1,80 @@
-# ForoHub - Challenge Alura 🚀
+<h1 align="center">Foro Hub API 💬</h1>
 
-¡Bienvenido a **ForoHub**! Esta es una API REST robusta desarrollada para el desafío de Alura Latam. El proyecto simula el backend de un foro de discusión, permitiendo gestionar tópicos (preguntas), usuarios y autenticación segura mediante tokens JWT.
+<p align="center">
+  <i>API REST desarrollada con Spring Boot para la gestión de tópicos en un foro de discusión, protegida mediante autenticación JWT.</i>
+</p>
 
-## 🛠️ Tecnologías Utilizadas
+## 📖 Descripción del Proyecto
 
-* **Java 17**: Lenguaje principal.
-* **Spring Boot 3**: Framework para el desarrollo ágil de la API.
-* **Spring Security**: Gestión de autenticación y autorización.
-* **JSON Web Token (JWT)**: Protocolo para la seguridad de los endpoints.
-* **Spring Data JPA**: Abstracción para la persistencia de datos.
-* **PostgreSQL**: Base de datos relacional para producción.
-* **Maven**: Gestor de dependencias.
-* **Hibernate**: Motor de mapeo objeto-relacional (ORM).
+**Foro Hub API** proporciona un conjunto completo de *endpoints* que permiten a los usuarios crear, leer, actualizar y eliminar tópicos de discusión (CRUD). Esta API está estructurada bajo una **Arquitectura clásica en Capas** (Controlador, Servicio y Repositorio), asegurando así un diseño de software profesional, escalable y mantenible. 
 
----
+La seguridad ha sido un pilar fundamental en este rediseño, por lo que todos los recursos (exceptuando el inicio de sesión) están protegidos a través del componente **Spring Security**. El proceso de autenticación de clientes (`stateless`) se gestiona mediante tokens **JSON Web Token (JWT)**, validados en cada petición HTTP por un filtro de seguridad personalizado.
 
-## 🔐 Configuración de Seguridad
+## ✨ Características Principales
 
-La API utiliza un sistema de autenticación **Stateless**. Para interactuar con los recursos protegidos (`/topicos`), es necesario seguir este flujo:
+1.  **Gestión de Tópicos (Módulo CRUD):**
+    *   **Creación Segura:** Valida rigurosamente la información contra duplicados antes de insertar nuevos registros (`POST /topicos`).
+    *   **Listado Inteligente:** Recupera el listado completo de discusiones habilitando parámetros de paginación y ordenamiento en tiempo real (`GET /topicos`).
+    *   **Visualización de Detalle:** Acceso granular al contenido específico de una sola publicación (`GET /topicos/{id}`).
+    *   **Limpieza de Contenido:** Eliminación controlada validando existencia previa (`DELETE /topicos/{id}`).
+2.  **Módulo de Seguridad (Autenticación JWT):**
+    *   Inicio de sesión seguro para usuarios registrados (`POST /login`).
+    *   Generación automática de Tokens JWT con expiración temporal configurada.
+    *   Interceptación obligatoria de solicitudes (Filter) para asegurar que el *Bearer Token* es legítimo.
 
+## 🛠️ Tecnologías y Herramientas Utilizadas
 
+*   **Java 17:** Lenguaje base.
+*   **Spring Boot 3:** Framework robusto para creación de APIs (`@RestController`, inyección de dependencias).
+*   **Spring Security:** Control severo del filtro de acceso y encriptación *BCrypt* de contraseñas.
+*   **Spring Data JPA (Hibernate):** Interfaz ORM para la capa de persistencia (Base de Datos).
+*   **Auth0 JWT:** Biblioteca estandarizada para firma, decodificación y validación de tokens seguros.
+*   **Bean Validation:** Uso de anotaciones como `@NotBlank` y `@NotNull` para blindar la entrada de datos.
+*   **Jackson:** Manipulación de objetos y adaptaciones estructurales entre los DTOs de JSON (`@JsonAlias`, `@JsonProperty`) y la sintaxis local de Java.
+*   **Maven:** Gestor de construcción.
 
-1. **Login**: Se debe enviar un `POST` a `/login` con las credenciales.
-2. **Token**: El servidor valida y retorna un `jwTtoken`.
-3. **Acceso**: Se debe incluir este token en el Header de cada petición subsiguiente como un `Bearer Token`.
+## 🗂️ Estructura del Proyecto Refactorizada
 
----
+El sistema aplica la separación de responsabilidades:
 
-## 📑 Endpoints Principales
-
-### 1. Autenticación
-* **POST** `/login`: Recibe un JSON con `email` y `contrasena`.
-
-### 2. Tópicos (Requiere Token)
-* **GET** `/topicos`: Lista todos los tópicos (incluye paginación y ordenamiento).
-* **POST** `/topicos`: Registra un nuevo tópico.
-* **GET** `/topicos/{id}`: Detalle de un tópico específico.
-* **PUT** `/topicos/{id}`: Actualiza los datos de un tópico.
-* **DELETE** `/topicos/{id}`: Elimina un tópico de la base de datos.
-
----
-
-## ⚙️ Configuración del Proyecto
-
-### Requisitos previos
-* JDK 17 o superior.
-* PostgreSQL 14 o superior.
-* Un IDE (IntelliJ IDEA recomendado).
-
-### Variables de Entorno
-Asegúrate de configurar tu archivo `src/main/resources/application.properties` con tus credenciales locales:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/foro_db
-spring.datasource.username=tu_usuario
-spring.datasource.password=tu_contrasena
-
-api.security.secret=${JWT_SECRET:tu_clave_secreta_aqui}
-
+```text
+src/main/java/com/foro/hub/
+├── controller
+│   ├── ControladorAutenticacion.java   # Interfaz REST de inicio de sesión
+│   └── ControladorTopicos.java         # Interfaz REST para el CRUD de tópicos
+├── model
+│   ├── Topico.java / Usuario.java      # Mapeo a Base de Datos (JPA Entities)
+│   └── Datos...java (Records)          # Data Transfer Objects (DTOs)
+├── repository
+│   ├── TopicoRepository.java           # Lógica DAO hacia Base de Datos
+│   └── UsuarioRepository.java          # Lógica DAO de validación de autenticidad de usuarios
+├── security
+│   ├── ConfiguracionSeguridad.java     # Bean y FilterChain principal para blindaje HttpSecurity
+│   └── FiltroAutenticacionJwt.java     # Extensión principal de OncePerRequestFilter 
+├── service
+│   ├── ServicioAutenticacion.java      # Interfaz funcional hacia proveedor principal (UserDetailsService)
+│   ├── ServicioManejoTokens.java       # Emisor de Auth0 y validador de claims HMAC256
+│   └── ServicioTopicos.java            # Núcleo duro de la lógica de negocio
+└── HubApplication.java                 # Archivo disparador Spring
 ```
-y ya, seria todo para usar mi programa creo.
+
+> **Nota Técnica Extra:** Se emplearon anotaciones especiales relacionales en las variables del ORM de Java para preservar completamente intacto el esquema SQL de tu base de datos original. La API mantendrá sus mismos *endpoints* funcionales hacia el frontend.
+
+## 🚀 Despliegue Local
+
+### Prerrequisitos
+- **Java 17** habilitado en variables de entorno.
+- Una base de datos relacional (MySQL/PostgreSQL) en funcionamiento. Previamente configurada en el archivo `application.properties`.
+- Definir la variable de entorno `API_SECURITY_SECRET` o establecer manualmente su propiedad en tu *properties* local para la firma de Tokens.
+
+### Pasos
+1. Accede a tu terminal en la carpeta raíz `ChallengeConsumoAPI/`.
+2. Verifica dependencias locales y compila el binario:
+   ```bash
+   ./mvnw clean package
+   ```
+3. Ejecuta la aplicación mediante Maven:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+4. Podrás conectarte y poner a prueba los *endpoints* mediante clientes como Postman o Insomnia a través de `http://localhost:8080/`.
