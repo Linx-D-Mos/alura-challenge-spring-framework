@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    // Este método es el que usará Spring Security para el login
-    UserDetails findByEmail(String email);
+    
+    UserDetails findByCorreoElectronico(String correoElectronico);
 }

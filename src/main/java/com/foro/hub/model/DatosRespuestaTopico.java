@@ -1,19 +1,26 @@
 package com.foro.hub.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 public record DatosRespuestaTopico(
         Long id,
-        String titulo,
-        String mensaje,
-        String status,
-        String autor,
-        String curso,
-        LocalDateTime fechaCreacion
+        @JsonProperty("titulo") String encabezadoPrincipal,
+        @JsonProperty("mensaje") String contenidoCuerpo,
+        @JsonProperty("status") String estadoActual,
+        @JsonProperty("autor") String creador,
+        @JsonProperty("curso") String categoriaCurso,
+        @JsonProperty("fechaCreacion") LocalDateTime instanteRegistro
 ) {
-    public DatosRespuestaTopico(Topico topico) {
-        this(topico.getId(), topico.getTitulo(), topico.getMensaje(),
-                topico.getStatus(), topico.getAutor(), topico.getCurso(),
-                topico.getFechaCreacion());
+    public DatosRespuestaTopico(Topico registroTopico) {
+        this(
+            registroTopico.getId(), 
+            registroTopico.getEncabezadoPrincipal(), 
+            registroTopico.getContenidoCuerpo(),
+            registroTopico.getEstadoActual(), 
+            registroTopico.getCreador(), 
+            registroTopico.getCategoriaCurso(),
+            registroTopico.getInstanteRegistro()
+        );
     }
 }

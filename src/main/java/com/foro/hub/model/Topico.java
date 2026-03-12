@@ -10,38 +10,47 @@ public class Topico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titulo;
-    private String mensaje;
-    private LocalDateTime fechaCreacion = LocalDateTime.now();
-    private String status = "ACTIVO";
-    private String autor;
-    private String curso;
+    
+    @Column(name = "titulo")
+    private String encabezadoPrincipal;
+    
+    @Column(name = "mensaje")
+    private String contenidoCuerpo;
+    
+    @Column(name = "fecha_creacion")
+    private LocalDateTime instanteRegistro = LocalDateTime.now();
+    
+    @Column(name = "status")
+    private String estadoActual = "ACTIVO";
+    
+    @Column(name = "autor")
+    private String creador;
+    
+    @Column(name = "curso")
+    private String categoriaCurso;
 
-    // Constructor Vacío (Obligatorio para JPA)
     public Topico() {}
 
-    // Constructor para registrar nuevo
-    public Topico(DatosRegistroTopico datos) {
-        this.titulo = datos.titulo();
-        this.mensaje = datos.mensaje();
-        this.autor = datos.autor();
-        this.curso = datos.curso();
+    public Topico(DatosRegistroTopico informacionEntrante) {
+        this.encabezadoPrincipal = informacionEntrante.encabezadoPrincipal();
+        this.contenidoCuerpo = informacionEntrante.contenidoCuerpo();
+        this.creador = informacionEntrante.creador();
+        this.categoriaCurso = informacionEntrante.categoriaCurso();
     }
 
-    public void actualizarDatos(DatosActualizarTopico datos) {
-        if (datos.titulo() != null) this.titulo = datos.titulo();
-        if (datos.mensaje() != null) this.mensaje = datos.mensaje();
-        if (datos.autor() != null) this.autor = datos.autor();
-        if (datos.curso() != null) this.curso = datos.curso();
-        if (datos.status() != null) this.status = datos.status();
+    public void actualizarInformacion(DatosActualizarTopico modificaciones) {
+        if (modificaciones.encabezadoPrincipal() != null) this.encabezadoPrincipal = modificaciones.encabezadoPrincipal();
+        if (modificaciones.contenidoCuerpo() != null) this.contenidoCuerpo = modificaciones.contenidoCuerpo();
+        if (modificaciones.creador() != null) this.creador = modificaciones.creador();
+        if (modificaciones.categoriaCurso() != null) this.categoriaCurso = modificaciones.categoriaCurso();
+        if (modificaciones.estadoActual() != null) this.estadoActual = modificaciones.estadoActual();
     }
 
-    // --- GETTERS (Cópialos tal cual) ---
     public Long getId() { return id; }
-    public String getTitulo() { return titulo; }
-    public String getMensaje() { return mensaje; }
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public String getStatus() { return status; }
-    public String getAutor() { return autor; }
-    public String getCurso() { return curso; }
+    public String getEncabezadoPrincipal() { return encabezadoPrincipal; }
+    public String getContenidoCuerpo() { return contenidoCuerpo; }
+    public LocalDateTime getInstanteRegistro() { return instanteRegistro; }
+    public String getEstadoActual() { return estadoActual; }
+    public String getCreador() { return creador; }
+    public String getCategoriaCurso() { return categoriaCurso; }
 }

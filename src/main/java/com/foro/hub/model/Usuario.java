@@ -14,20 +14,23 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String contrasena;
+    
+    @Column(name = "email")
+    private String correoElectronico;
+    
+    @Column(name = "contrasena")
+    private String claveSecreta;
 
     public Usuario() {}
 
-    // Getters y Setters
     public Long getId() { return id; }
-    public String getEmail() { return email; }
+    public String getCorreoElectronico() { return correoElectronico; }
 
     @Override
-    public String getPassword() { return contrasena; }
+    public String getPassword() { return claveSecreta; }
 
     @Override
-    public String getUsername() { return email; }
+    public String getUsername() { return correoElectronico; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

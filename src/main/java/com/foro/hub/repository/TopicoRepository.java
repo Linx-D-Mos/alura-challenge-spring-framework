@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TopicoRepository extends JpaRepository<Topico, Long> {
-    // Esto sirve para validar que no haya duplicados
-    boolean existsByTituloAndMensaje(String titulo, String mensaje);
+    
+    boolean existsByEncabezadoPrincipalAndContenidoCuerpo(String encabezadoPrincipal, String contenidoCuerpo);
 }

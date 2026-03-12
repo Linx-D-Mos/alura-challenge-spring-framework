@@ -1,3 +1,8 @@
 package com.foro.hub.model;
 
-public record DatosAutenticacionUsuario(String email, String contrasena) {}
+import com.fasterxml.jackson.annotation.JsonAlias;
+
+public record DatosAutenticacionUsuario(
+    @JsonAlias("email") String correoUsuario, 
+    @JsonAlias("contrasena") String claveSecreta
+) {}
